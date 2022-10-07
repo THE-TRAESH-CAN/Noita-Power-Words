@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    const shitList = [
+        {
+            event: "Bee",
+            matches: ["bee"]
+        },
+        {
+            event: "GoldTouchy",
+            matches: ["money", "gold", "moola"]
+        },
+        {
+            event: "Acid",
+            matches: ["ass"]
+        },
+        {
+            event: "Hentai",
+            matches: ["weeb", "weebs", "web", "webe", "weed", "weaves", "slurp"]
+        },
+        {
+            event: "WormLauncher",
+            matches: ["zoom", "soon"]
+        },
+        {
+            event: "Ukko",
+            matches: ["old", "gramp"]
+        },
+        {
+            event: "Steve",
+            matches: ["god", "steve"]
+        },
+        {
+            event: "Trip",
+            matches: ["high", "hai"]
+        },
+        {
+            event: "Tanks",
+            matches: ["thank", "tank"]
+        },
+        {
+            event: "Cocktail",
+            matches: ["throw"]
+        },
+        {
+            event: "LavaShift",
+            matches: ["lava"]
+        },
+        {
+            event: "Goblins",
+            matches: ["greed"]
+        },
+        {
+            event: "Toasters",
+            matches: ["bread", "loaf"]
+        },
+        {
+            event: "Sweaty",
+            matches: ["sweat", "moist"]
+        },
+        {
+            event: "Byebye",
+            matches: ["bye"]
+        },
+        {
+            event: "ThisIsFine",
+            matches: ["this is fine"]
+        },
+        {
+            event: "Coolio",
+            matches: ["cool", "cold"]
+        },
+        {
+            event: "Twitch",
+            matches: ["prime", "twitch"]
+        },
+        {
+            event: "Shrooms",
+            matches: ["shroom", "sub"]
+        },
+        {
+            event: "Eggy",
+            matches: ["chicken", "egg"]
+        },
+        {
+            event: "Raid",
+            matches: ["raid"]
+        },
+        {
+            event: "BeegSteve",
+            matches: ["oh my god"]
+        },
+        {
+            event: "Cheapskate",
+            matches: ["cheap", "expensive"]
+        },
+        {
+            event: "Cop",
+            matches: ["cop"]
+        },
+        {
+            event: "BlazeIt",
+            matches: ["blaze it"]
+        },
+        {
+            event: "Yeet",//todo
+            matches: ["yeet", "yet"]
+        },
+        {
+            event: "Loose",
+            matches: ["loose"]
+        },
+        {
+            event: "Grounded",
+            matches: ["fall", "stand", "rest"]
+        },
+        {
+            event: "MoistMob",
+            matches: ["moist mob"]
+        },
+        {
+            event: "RatKing",
+            matches: ["rat king"]
+        },
+        {
+            event: "PlayerGhost",
+            matches: ["ghost"]
+        },
+        {
+            event: "RogueBH",
+            matches: ["suck", "succ"]
+        },
+        {
+            event: "SpiderWife",//todo
+            matches: ["spider wife"]
+        },
+        {
+            event: "SpikeDrinks",
+            matches: ["spike"]
+        },
+        {
+            event: "Flend",
+            matches: ["friend"]
+        },
+        {
+            event: "DoughDeer",
+            matches: ["dough", "doe", "oh dear", "oh deer"]
+        },
+        {
+            event: "AlchemicCircle",
+            matches: ["cocktail"]
+        },
+        {
+            event: "Quack",
+            matches: ["quack", "honk"]
+        },
+        {
+            event: "Blessed",
+            matches: ["blessed"]
+        },
+        {
+            event: "Cursed",
+            matches: ["cursed"]
+        },
+        {
+            event: "HolyBomb",
+            matches: ["holy"]
+        },
+        {
+            event: "Gamba",
+            matches: ["gamba"]
+        },
+        {
+            event: "BigLove",
+            matches: ["much love"]
+        },
+        {
+            event: "HankHill",
+            matches: ["hank hill", "propane"]
+        },
+        {
+            event: "Antiquing",
+            matches: ["antique"]
+        },
+        {
+            event: "Follower",
+            matches: ["follow"]
+        },
+        {
+            event: "WeHuffing",
+            matches: ["paste"]
+        },
+        {
+            event: "Birthday",
+            matches: ["happy birthday"]
+        },
+        {
+            event: "Berserk",
+            matches: ["bomb"]
+        },
+        {
+            event: "Nolla",
+            matches: ["nola", "nolla"]
+        },
+
+    ]
+    const shit = new webkitSpeechRecognition
+    shit.continuous = true
+    shit.interimResults = true
+    shit.lang = "en-US"
+    shit.onresult = function (event) {
+        const res = event.results[event.results.length - 1][0]
+        if (res.transcript) {
+            console.log(res.transcript.toLowerCase())
+            for (const entry of shitList) {
+                for (const match of entry.matches) {
+                    if (res.transcript.toLowerCase().includes(match)) {
+                        console.log(`SEND ${entry.event}`)
+                        ass.send(`{ event: "${entry.event}" }`)
+                    }
+                }
+            }
+        }
+    }
+    shit.onend = function (event) {
+        shit.start()
+    }
+    shit.start()
+
+    function openSock(evt) {
+        console.log("Connected ?")
+    }
+
+    function reconnectSock() {
+        setTimeout(() => {
+            ass = new WebSocket("ws://localhost:6969")
+            ass.onopen = openSock
+            ass.onclose = reconnectSock
+        }, 3000)
+
+    }
+    reconnectSock()
+</script>
+
+</html>
