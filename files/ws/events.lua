@@ -1,36 +1,3 @@
-dofile_once("data/scripts/lib/utilities.lua")
-props = {
-    "data/entities/props/physics_chair_1.xml",
-    "data/entities/props/physics_chair_2.xml",
-    "data/entities/props/physics_box_harmless.xml",
-    "data/entities/props/stonepile.xml",
-    "data/entities/props/physics_cart.xml",
-    "data/entities/props/physics_minecart.xml",
-    "data/entities/props/physics_propane_tank.xml",
-    "data/entities/props/physics_pressure_tank.xml",
-    "data/entities/props/physics_box_explosive.xml",
-    "data/entities/props/physics_barrel_oil.xml",
-    "data/entities/props/physics_barrel_radioactive.xml"
-}
-animals = {
-    "data/entities/animals/deer.xml",
-    "data/entities/animals/duck.xml",
-    "data/entities/animals/rat.xml",
-    "data/entities/animals/wolf.xml",
-    "data/entities/animals/elk.xml",
-    "data/entities/animals/frog.xml",
-    "data/entities/animals/sheep.xml"
-}
-function calculate_force_at(body_x, body_y)
-    local gravity_coeff = 196*100
-    local direction = math.pi/2
-    
-    local fx = math.cos( direction ) * gravity_coeff
-    local fy = -math.sin( direction ) * gravity_coeff
-  
-    return fx,fy
-  end
-
 lastTranscript = ""
 lastSpeechFrame = GameGetFrameNum()
 wsEvents = {
@@ -590,5 +557,21 @@ wsEvents = {
                 wait(1)
             end
         end)
+    end,
+    BackToTheBeginning = function()
+        local player = get_player()
+        local x = MagicNumbersGetValue("DESIGN_PLAYER_START_POS_X")
+        local y = MagicNumbersGetValue("DESIGN_PLAYER_START_POS_Y")
+        if (player ~= nil) then
+            EntitySetTransform(player, x, y)
+        end
+
+        BiomeMapLoad_KeepPlayer( "mods/powerwords/files/noop.lua", "data/biome/_pixel_scenes.xml" )
+    
+        -- clean up entrances to biomes
+        LoadPixelScene( "data/biome_impl/clean_entrance.png", "", 128, 1534, "", true, true )
+        LoadPixelScene( "data/biome_impl/clean_entrance.png", "", 128, 3070, "", true, true )
+        LoadPixelScene( "data/biome_impl/clean_entrance.png", "", 128, 6655, "", true, true )
+        LoadPixelScene( "data/biome_impl/clean_entrance.png", "", 128, 10750, "", true, true )
     end
 }
