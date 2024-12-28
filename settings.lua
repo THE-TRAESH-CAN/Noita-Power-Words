@@ -1,7 +1,7 @@
 dofile("data/scripts/lib/mod_settings.lua")
 
 local mod_id = "powerwords"
-mod_settings_version = 1
+mod_settings_version = 2
 mod_settings = 
 {
 	{
@@ -20,6 +20,18 @@ mod_settings =
 		value_display_formatting = " $0 seconds",
         scope=MOD_SETTING_SCOPE_RUNTIME
 	},
+	{
+		id = "PW_DEAD_EVENTS",
+		ui_name = "Allow events in death screen",
+		value_default = false,
+		scope=MOD_SETTING_SCOPE_RUNTIME
+	},
+	{
+		id = "PW_ADVANCED_SPAWNS",
+		ui_name = "Advanced spawns (nemesis like)",
+		value_default = false,
+		scope=MOD_SETTING_SCOPE_RUNTIME
+	}
 }
 
 function ModSettingsUpdate( init_scope )

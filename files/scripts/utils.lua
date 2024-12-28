@@ -1,30 +1,5 @@
 dofile_once("data/scripts/lib/utilities.lua")
 
-
-
-props = {
-    "data/entities/props/physics_chair_1.xml",
-    "data/entities/props/physics_chair_2.xml",
-    "data/entities/props/physics_box_harmless.xml",
-    "data/entities/props/stonepile.xml",
-    "data/entities/props/physics_cart.xml",
-    "data/entities/props/physics_minecart.xml",
-    "data/entities/props/physics_propane_tank.xml",
-    "data/entities/props/physics_pressure_tank.xml",
-    "data/entities/props/physics_box_explosive.xml",
-    "data/entities/props/physics_barrel_oil.xml",
-    "data/entities/props/physics_barrel_radioactive.xml"
-}
-animals = {
-    "data/entities/animals/deer.xml",
-    "data/entities/animals/duck.xml",
-    "data/entities/animals/rat.xml",
-    "data/entities/animals/wolf.xml",
-    "data/entities/animals/elk.xml",
-    "data/entities/animals/frog.xml",
-    "data/entities/animals/sheep.xml"
-}
-
 function get_player() return EntityGetWithTag("player_unit")[1] end
 
 function get_player_pos()
@@ -308,4 +283,9 @@ function calculate_force_at(body_x, body_y)
     local fy = -math.sin( direction ) * gravity_coeff
   
     return fx,fy
+end
+
+function setrandom()
+    local frame = GameGetFrameNum()
+    SetRandomSeed(frame + 69, frame - 69)
 end

@@ -45,10 +45,25 @@ _ws_main = function()
                 client = nil
             end
             local decoded, data = pcall(json.decode, msg)
-            if (decoded) then
-                local evt = wsEvents[data.event]
-                if (evt ~= nil) then
-                    local e, res = pcall(evt, data.transcript)
+            local evt = wsEvents[data.event] or nil
+            local eee = data.event or nil
+            if (decoded and eee == "_speech") then
+                local e, res = pcall(evt, data)
+            elseif (decoded) then
+                local sliders = ExtractSliders(data)
+                local onCooldown = CheckEventIsOnCooldown(data.event, sliders.COOLDOWN)
+                local reachedActivationLimit = CheckEventActivationsLimitReached(data.event, sliders.LIMIT)
+                local isDead = IsPlayerDead()
+                local death_screen_events = ModSettingGet("powerwords.PW_DEAD_EVENTS")
+                --GamePrint(tostring(isDead) .. " " .. tostring(death_screen_events) .. type(isDead))
+                if (not death_screen_events and isDead == "1")then
+                elseif (evt ~= nil and not onCooldown and not reachedActivationLimit) then
+                    data._sliders = sliders
+                    local e, res = pcall(evt, data)
+                    if (res) then
+                        UpdateEventActivations(data.event)
+                        UpdateEventCooldown(data.event)
+                    end
                 end
             end
         end
