@@ -19,8 +19,19 @@ function OnWorldPostUpdate()
     local seconds = ModSettingGet("powerwords.PW_PUNISHMENT")
     if (seconds == 0) then return end
     if (frame - lastSpeechFrame >= (seconds * 60)) then
-        spawn_entity_in_view_random_angle("data/entities/animals/necromancer_super.xml", 69, 269)
-        lastSpeechFrame = frame
+        local player = get_player()
+        local isPoly, eid IsPlayerPolymorphed()
+        if (isPoly) then
+            player = eid
+        end
+
+        if (player ~= nil) then --TODO HAVE CHECKPOINTS
+            local x = MagicNumbersGetValue("DESIGN_PLAYER_START_POS_X")
+            local y = MagicNumbersGetValue("DESIGN_PLAYER_START_POS_Y")
+            EntitySetTransform(player, x, y)
+            --spawn_entity_in_view_random_angle("data/entities/animals/necromancer_super.xml", 69, 269)
+            lastSpeechFrame = frame
+        end
     end
 end
 

@@ -130,7 +130,7 @@ wsEvents = {
         local sliders = data._sliders
         local min = sliders.min
         local max = sliders.max
-        for i = min, max do
+        for i = 1, Random(min, max) do
             spawn_entity_in_view_random_angle("data/entities/animals/fly.xml", 10, 280)
         end
         return true
@@ -149,7 +149,7 @@ wsEvents = {
         local sliders = data._sliders
         local min = sliders.min
         local max = sliders.max
-        for i = min, max do
+        for i = 1, Random(min, max) do
             spawn_entity_in_view_random_angle("data/entities/projectiles/deck/acidshot.xml", 5, 180)
         end
         return true
@@ -160,7 +160,7 @@ wsEvents = {
         local sliders = data._sliders
         local min = sliders.min
         local max = sliders.max
-        for i = min, max do
+        for i = 1, Random(min, max) do
             spawn_entity_in_view_random_angle("data/entities/projectiles/deck/tentacle_portal.xml", 25, 200)
         end
         return true
@@ -171,7 +171,7 @@ wsEvents = {
         local sliders = data._sliders
         local min = sliders.min
         local max = sliders.max
-        for i = min, max do
+        for i = 1, Random(min, max) do
             spawn_entity_in_view_random_angle("data/entities/projectiles/deck/worm_shot.xml", 25, 200)
         end
         return true
@@ -189,7 +189,7 @@ wsEvents = {
             ["Thunder Spirit"] = { "data/entities/animals/thunderskull.xml" }
         }
         local props = ExtractCheckboxes(data.checkboxes, animals)
-        for i = min, r do
+        for i = 1, r do
             local prop = random_from_array(props)
             spawn_entity_in_view_random_angle(prop, 40, 200, 0, function(eid)
                 entity_attack_timer(eid, 20000)
@@ -204,7 +204,7 @@ wsEvents = {
         local min = sliders.min
         local max = sliders.max
         local r = Random(min, max)
-        for i = min, r do
+        for i = 1, r do
             spawn_entity_in_view_random_angle("data/entities/animals/necromancer_shop.xml", 40, 200)
         end
         return true
@@ -217,6 +217,7 @@ wsEvents = {
         local frame = GameGetFrameNum()
         local last_frame = tonumber(GlobalsGetValue("fungal_shift_last_frame", "-1000000"))
         EntityIngestMaterial(player, fungi, 600)
+        return true
     end,
     Tanks = function(data)
         setrandom()
@@ -235,7 +236,7 @@ wsEvents = {
             ["Bot"] = { "data/entities/animals/drone_physics.xml" }
         }
         local props = ExtractCheckboxes(data.checkboxes, animals)
-        for i = min, r do
+        for i = 1, r do
             local prop = random_from_array(props)
             spawn_entity_in_view_random_angle(prop, 40, 200)
         end
@@ -248,7 +249,7 @@ wsEvents = {
         local min = sliders.min
         local max = sliders.max
         local r = Random(min, max)
-        for i = min, r do
+        for i = 1, r do
             spawn_entity_in_view_random_angle("data/entities/animals/goblin_bomb.xml", 40, 200)
         end
         return true
@@ -283,7 +284,7 @@ wsEvents = {
         local min = sliders.min
         local max = sliders.max
         local r = Random(min, max)
-        for i = min, r do
+        for i = 1, r do
             spawn_entity_in_view_random_angle("data/entities/animals/shotgunner.xml", 40, 200)
         end
         return true
@@ -295,7 +296,7 @@ wsEvents = {
         local min = sliders.min
         local max = sliders.max
         local r = Random(min, max)
-        for i = min, r do
+        for i = 1, r do
             spawn_entity_in_view_random_angle("data/entities/animals/drone_lasership.xml", 40, 200)
         end
         return true
@@ -403,7 +404,7 @@ wsEvents = {
             ["Ice Mage"] = { "data/entities/animals/icemage.xml" }
         }
         local props = ExtractCheckboxes(data.checkboxes, animals)
-        for i = min, r do
+        for i = 1, r do
             local prop = random_from_array(props)
             spawn_entity_in_view_random_angle("data/entities/animals/iceskull.xml", 60, 200)
         end
@@ -433,7 +434,7 @@ wsEvents = {
             ["Giga Shrooms"] = { "data/entities/animals/fungus_giga.xml" }
         }
         local props = ExtractCheckboxes(data.checkboxes, animals)
-        for i = min, r do
+        for i = 1, r do
             local prop = random_from_array(props)
             spawn_entity_in_view_random_angle(prop, 80, 240)
         end
@@ -446,7 +447,7 @@ wsEvents = {
         local min = sliders.min
         local max = sliders.max
         local r = Random(min, max)
-        for i = min, r do
+        for i = 1, r do
             spawn_entity_in_view_random_angle("data/entities/items/pickup/egg_monster.xml", 60, 200)
         end
         return true
@@ -462,7 +463,7 @@ wsEvents = {
             spawn_entity_in_view_random_angle("data/entities/animals/miner_chef.xml", 60, 250)
         end
         local r2 = Random(min, max)
-        for i = min, r2 do
+        for i = 1, r2 do
             spawn_entity_in_view_random_angle("data/entities/animals/miner_fire.xml", 60, 250)
         end
         return true
@@ -502,7 +503,7 @@ wsEvents = {
         local max = sliders.max
         local balance = sliders.BALANCE --"No Duds", "Rare Duds", "50/50", "Dud Sometimes", "Mostly Duds"
         local rand = Random(min, max)
-        for i = min, rand do
+        for i = 1, rand do
             spawn_entity_in_view_random_angle("data/entities/projectiles/bomb_holy.xml", 10, 200, 20, function(eid)
                 local dud = false
                 local r = Random(1, 100)
@@ -533,7 +534,7 @@ wsEvents = {
         local min = sliders.min
         local max = sliders.max
         local rand = Random(min, max)
-        for i = min, max do
+        for i = 1, max do
             spawn_entity_in_view_random_angle("data/entities/animals/necromancer_super.xml", 100, 300)
         end
         return true
@@ -639,7 +640,7 @@ wsEvents = {
         local min = sliders.min
         local max = sliders.max
         local r = Random(min, max)
-        for i = min, r do
+        for i = 1, r do
             spawn_entity_in_view_random_angle("data/entities/animals/ultimate_killer.xml", 10, 250)
         end
         return true
@@ -660,7 +661,7 @@ wsEvents = {
         }
         local r = Random(min, max)
         local props = ExtractCheckboxes(data.checkboxes, animals)
-        for i = min, r do
+        for i = 1, r do
             local prop = random_from_array(props)
             spawn_entity_in_view_random_angle(prop, 60, 250)
         end
@@ -718,7 +719,7 @@ wsEvents = {
         local min = sliders.min
         local max = sliders.max
         local r = Random(min, max)
-        for i = min, r do
+        for i = 1, r do
             spawn_entity_in_view_random_angle("data/entities/animals/playerghost.xml", 10, 250)
         end
         return true
@@ -735,7 +736,7 @@ wsEvents = {
         }
         local r = Random(min, max)
         local props = ExtractCheckboxes(data.checkboxes, animals)
-        for i = min, r do
+        for i = 1, r do
             local prop = random_from_array(props)
             spawn_entity_in_view_random_angle(prop, 60, 250)
         end
@@ -749,7 +750,7 @@ wsEvents = {
         local min = sliders.min
         local max = sliders.max
         local r = Random(min, max)
-        for i = min, r do
+        for i = 1, r do
             spawn_entity_in_view_random_angle("data/entities/animals/rat.xml", 10, 250, 10, function(eid)
                 --TODO UPDATE IT
             end)
@@ -764,7 +765,7 @@ wsEvents = {
         local min = sliders.min
         local max = sliders.max
         local r = Random(min, max)
-        for i = min, r do
+        for i = 1, r do
             spawn_entity_in_view_random_angle("data/entities/animals/deer.xml", 10, 250, 10, function(eid)
                 --TODO UPDATE IT
             end)
@@ -779,7 +780,7 @@ wsEvents = {
         local min = sliders.min
         local max = sliders.max
         local r = Random(min, max)
-        for i = min, r do
+        for i = 1, r do
             spawn_entity_in_view_random_angle("data/entities/animals/duck.xml", 10, 250, 10, function(eid)
                 --TODO UPDATE IT
             end)
@@ -841,7 +842,7 @@ wsEvents = {
         local theta = rot
         local length = 600
 
-        for i = min, how_many do
+        for i = 1, how_many do
             local vel_x = math.cos(theta) * length
             local vel_y = 0 - math.sin(theta) * length
 
@@ -889,7 +890,8 @@ wsEvents = {
             ["Toxic"] = { "radioactive_liquid" },
             ["Poly"] = { "magic_liquid_polymorph" },
             ["Random Poly"] = { "magic_liquid_random_polymorph" },
-            ["Freezing Liquid"] = { "blood_cold" }
+            ["Freezing Liquid"] = { "blood_cold" },
+            ["Purifying Powder"] = { "purifying_powder" }
         }
         local drinks = ExtractCheckboxes(data.checkboxes, mats)
         local inventory = GetInven()
@@ -921,13 +923,13 @@ wsEvents = {
         elseif (balance == 3) then
             speed = 20
         end
-        for i = min, rand do
+        for i = 1, rand do
             spawn_entity_in_view_random_angle("data/entities/animals/ghost.xml", 140, 250, false, function(eId)
                 local player = get_player()
                 if player ~= nil then
                     edit_all_components(eId, "GhostComponent", function(comp, vars)
                         vars.mEntityHome = player
-                        vars.speed = speed
+                        vars.speed = tostring(speed)
                         EntityAddComponent(eId, "LifetimeComponent", {
                             lifetime = "3600"
                         })
@@ -960,18 +962,18 @@ wsEvents = {
             ["Healthium"] = { "magic_liquid_hp_regeneration" }
         }
         local mats = ExtractCheckboxes(data.checkboxes, opts)
-        spawn_entity_in_view_random_angle("data/entities/projectiles/deck/circle_acid.xml", 80, 200, false,
+        spawn_entity_in_view_random_angle("data/entities/projectiles/circle_acid_die.xml", 80, 200, false,
             function(circle)
                 async(function()
-                    ComponentSetValue(EntityGetFirstComponent(circle, "LifetimeComponent"), "lifetime", "900")
-                    ComponentSetValue(EntityGetFirstComponent(circle, "ParticleEmitterComponent"), "airflow_force",
-                        "0.01");
-                    ComponentSetValue(EntityGetFirstComponent(circle, "ParticleEmitterComponent"),
-                        "image_animation_speed", "3");
-                    for i = 1, 10 do
+                    ComponentSetValue2(EntityGetFirstComponentIncludingDisabled(circle, "ParticleEmitterComponent"), "image_animation_file", "data/particles/image_emitters/circle_16.png")
+                    ComponentSetValue2(EntityGetFirstComponent(circle, "LifetimeComponent"), "lifetime", 900)
+                    ComponentSetValue2(EntityGetFirstComponent(circle, "ParticleEmitterComponent"), "airflow_force",0.01);
+                    ComponentSetValue2(EntityGetFirstComponent(circle, "ParticleEmitterComponent"),"image_animation_speed", 0.75);
+                    for i = 1, 90 do
                         ComponentSetValue(EntityGetFirstComponent(circle, "ParticleEmitterComponent"),
-                            "emitted_material_name", mats[Random(1, #mats)]);
+                            "emitted_material_name", random_from_array(mats));
                         wait(20)
+                        setrandom()
                     end
                 end)
             end)
@@ -984,7 +986,7 @@ wsEvents = {
         local min = sliders.min
         local max = sliders.max
         async(function()
-            for ii = min, max do
+            for ii = 1, 5 do
                 for i = min, max do
                     spawn_entity_in_view_random_angle("data/entities/projectiles/deck/glue_shot.xml", 5, 180)
                 end
@@ -995,7 +997,7 @@ wsEvents = {
     end,
     Birthday = function(data)
         setrandom()
-
+        --TODO UPDATE THIS SHIT
         local x, y = get_player_pos()
         EntityLoad("data/entities/items/pickup/chest_random.xml", x, y)
         return true

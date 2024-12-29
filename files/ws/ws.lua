@@ -56,6 +56,7 @@ _ws_main = function()
                 local isDead = IsPlayerDead()
                 local death_screen_events = ModSettingGet("powerwords.PW_DEAD_EVENTS")
                 --GamePrint(tostring(isDead) .. " " .. tostring(death_screen_events) .. type(isDead))
+                --GamePrint("onCooldown: " .. tostring(onCooldown) .. " LimitReached: " .. tostring(reachedActivationLimit))
                 if (not death_screen_events and isDead == "1")then
                 elseif (evt ~= nil and not onCooldown and not reachedActivationLimit) then
                     data._sliders = sliders

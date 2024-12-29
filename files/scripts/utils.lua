@@ -34,7 +34,7 @@ function spawn_entity(ename, offset_x, offset_y)
 end
 
 function get_players()
-    return EntityGetWithTag( "player_unit" ) or {};
+    return EntityGetWithTag("player_unit") or {};
 end
 
 function resolve_localized_name(s, default)
@@ -91,7 +91,7 @@ function spawn_item_in_range(path, min_x_range, max_x_range, min_y_range,
 
     if spawn_blackhole then
         EntityLoad("data/entities/projectiles/deck/black_hole.xml", x + dx,
-                   y + dy)
+            y + dy)
     end
     local ix, iy = FindFreePositionForBody(x + dx, y + dy, 300, 300, 30)
     return EntityLoad(path, ix, iy)
@@ -99,7 +99,7 @@ end
 
 function spawn_item(path, min_range, max_range, spawn_blackhole)
     return spawn_item_in_range(path, min_range, max_range, min_range, max_range,
-                               0, 0, spawn_blackhole)
+        0, 0, spawn_blackhole)
 end
 
 function empty_player_stomach()
@@ -113,66 +113,76 @@ function empty_player_stomach()
 end
 
 function GetBestPoint(x, y, distance, resolution)
-	local bestScore = -10
-	local bestAngle = 0
-	local bestDistance = 0
-	local seed = math.floor(math.random(0,resolution))
-	
-	for i = seed, resolution - 1 + seed do
-	
-		local hit2, hx2, hy2, a2 = Raycast(x, y, distance, i/resolution - (1/resolution/2))
-		local hit1, hx1, hy1, a1 = Raycast(x, y, distance, i/resolution)
-		local hit3, hx3, hy3, a3 = Raycast(x, y, distance, i/resolution + (1/resolution/2))
-		
-		local mid = dist(x, y, hx1, hy1)
-		local score = mid + dist(x, y, hx2, hy2) + dist(x, y, hx3, hy3)
-		if(bestScore < score) then
-			bestScore = score
-			bestAngle = a1
-			bestDistance = math.sqrt(mid)
-		end
-	end
-	
-	return bestAngle, bestDistance
+    local bestScore = -10
+    local bestAngle = 0
+    local bestDistance = 0
+    local seed = math.floor(math.random(0, resolution))
+
+    for i = seed, resolution - 1 + seed do
+        local hit2, hx2, hy2, a2 = Raycast(x, y, distance, i / resolution - (1 / resolution / 2))
+        local hit1, hx1, hy1, a1 = Raycast(x, y, distance, i / resolution)
+        local hit3, hx3, hy3, a3 = Raycast(x, y, distance, i / resolution + (1 / resolution / 2))
+
+        local mid = dist(x, y, hx1, hy1)
+        local score = mid + dist(x, y, hx2, hy2) + dist(x, y, hx3, hy3)
+        if (bestScore < score) then
+            bestScore = score
+            bestAngle = a1
+            bestDistance = math.sqrt(mid)
+        end
+    end
+
+    return bestAngle, bestDistance
 end
 
 function Raycast(x, y, distance, fraction)
-	local angle = fraction * math.pi * 2
-	x, y = ToPointFromDirection(x,y,10, angle)
-	local sx, sy = ToPointFromDirection(x,y,distance-10, angle)
-	local hit, hx, hy = RaytraceSurfaces(x, y, sx, sy)--RaytraceSurfaces RaytracePlatforms
-	return hit, hx, hy, angle;
+    local angle = fraction * math.pi * 2
+    x, y = ToPointFromDirection(x, y, 10, angle)
+    local sx, sy = ToPointFromDirection(x, y, distance - 10, angle)
+    local hit, hx, hy = RaytraceSurfaces(x, y, sx, sy) --RaytraceSurfaces RaytracePlatforms
+    return hit, hx, hy, angle;
 end
 
 function ToPointFromDirection(x, y, distance, angle)
-	local sx, sy = x + math.cos(angle) * distance,
-				   y + math.sin(angle) * distance;
+    local sx, sy = x + math.cos(angle) * distance,
+        y + math.sin(angle) * distance;
     return sx, sy
 end
 
 function dist(x, y, sx, sy)
-	return ((sx-x)*(sx-x)) + ((sy-y)*(sy-y))
+    return ((sx - x) * (sx - x)) + ((sy - y) * (sy - y))
+end
+
+function RemoveCameraBound(entity)
+    local comps = EntityGetComponent(entity, "CameraBoundComponent")
+    if (comps ~= nil) then
+        for _, comp in ipairs(comps) do
+            EntityRemoveComponent(entity, comp)
+        end
+    end
 end
 
 function spawn_entity_in_view_random_angle(filename, min_distance, max_distance, safety, callback, inEmpty)
-	safety = safety or 20
-	if inEmpty ~= true then inEmpty = false end
-	
-	async(function()
-		local x, y, hit, hx, hy, angle, distance
-		repeat
-			wait(1)
-			local fraction = math.random();
-			distance = Random(min_distance, max_distance) + safety;
-			x, y = get_player_pos()
-			hit, hx, hy, angle = Raycast(x, y, distance, fraction)
-		until(hit == inEmpty and dist(x, y, hx, hy) > (min_distance*min_distance))
-		
-		hx, hy = ToPointFromDirection(x, y, distance - safety, angle)
-		local eid = EntityLoad(filename, hx, hy)
-		if(callback) then callback(eid) end
-	end)
+    safety = safety or 20
+    if inEmpty ~= true then inEmpty = false end
+
+    async(function()
+        local x, y, hit, hx, hy, angle, distance
+        repeat
+            wait(1)
+            local fraction = math.random();
+            distance = Random(min_distance, max_distance) + safety;
+            x, y = get_player_pos()
+            hit, hx, hy, angle = Raycast(x, y, distance, fraction)
+        until (hit == inEmpty and dist(x, y, hx, hy) > (min_distance * min_distance))
+
+        hx, hy = ToPointFromDirection(x, y, distance - safety, angle)
+        local eid = EntityLoad(filename, hx, hy)
+        RemoveCameraBound(eid)
+        if (callback) then callback(eid) end
+    end)
 end
+
 local states = {
     "RandomMove",
     "Wandering",
@@ -195,71 +205,70 @@ local states = {
     "JobGoto",
     "JobHelpOtherEntity",
     "GoNearHome",
-   }
+}
 function entity_attack_timer(eid, frames)
     local AIComponent = EntityGetFirstComponentIncludingDisabled(eid, "AnimalAIComponent")
     if (AIComponent == nil) then return end
-    
+
     ComponentSetValue2(AIComponent, "ai_state", 2)
     ComponentSetValue2(AIComponent, "ai_state_timer", frames)
     GamePrint(states[ComponentGetValue2(AIComponent, "ai_state")])
 end
 
-function DistanceFromLineMany(a,b,c, aX,aY) -- ax + by + c = 0 | by = -ax - c
-	local top = 0
-	for k, v in pairs(aX) do
-		local dis = a * aX[k] + b * aY[k] + c;
-		top = top + dis*dis;
-	end
-	return top/(a*a+b*b);
+function DistanceFromLineMany(a, b, c, aX, aY) -- ax + by + c = 0 | by = -ax - c
+    local top = 0
+    for k, v in pairs(aX) do
+        local dis = a * aX[k] + b * aY[k] + c;
+        top = top + dis * dis;
+    end
+    return top / (a * a + b * b);
 end
 
 function PointToLine(x, y, a)
-	if( a == 90) then a = 90.5; end
-	if( a == 270) then a = 270.5; end
-	local radian = a * math.pi / 180;
-	-- m =  tan(angle)
-	local m = math.tan(radian);
-	-- n = startPoint_Y - (tan ( angle) * startPoint_X )
-	local n = y - m * x;
-	-- m*x + n = y 
-	return -m, 1, -n, radian;
+    if (a == 90) then a = 90.5; end
+    if (a == 270) then a = 270.5; end
+    local radian = a * math.pi / 180;
+    -- m =  tan(angle)
+    local m = math.tan(radian);
+    -- n = startPoint_Y - (tan ( angle) * startPoint_X )
+    local n = y - m * x;
+    -- m*x + n = y
+    return -m, 1, -n, radian;
 end
 
-
 function GetTunelDirectionFromPoint2(x, y, distance, resolution)
-local pointX = {};
-	local pointY = {};
-	table.insert(pointX, x);
-	table.insert(pointY, y);
-	
-	for i = 0, resolution - 1 do
-		local angle = i / resolution * math.pi * 2
-		local sx, sy = x + math.cos(angle) * distance,
-					   y + math.sin(angle) * distance;
-					   
-	    local hit, hx, hy = RaytracePlatforms(x, y, sx, sy)
-		table.insert(pointX, hx);
-		table.insert(pointY, hy);
-		
-		--EntityLoad( "data/entities/particles/poof_pink.xml", hx, hy )
-	end
-	
-	local angleMin = nil
-	local distance = nil
-	
-	for i = 0, 180 do
-		local a,b,c, angleRad = PointToLine(x, y, i)
-		local dist = DistanceFromLineMany(a,b,c, pointX, pointY)
-		if distance == nil or distance > dist then
-			angleMin = angleRad;
-			distance = dist
-		end
-	end
-	--GamePrint(angleMin)
-	if math.random(0,2) == 0 then angleMin = angleMin + math.pi end
-	
-	return x, y, angleMin
+    local pointX = {};
+    local pointY = {};
+    table.insert(pointX, x);
+    table.insert(pointY, y);
+
+    for i = 0, resolution - 1 do
+        local angle = i / resolution * math.pi * 2
+        local sx, sy = x + math.cos(angle) * distance,
+            y + math.sin(angle) * distance;
+
+        local hit, hx, hy = RaytracePlatforms(x, y, sx, sy)
+        table.insert(pointX, hx);
+        table.insert(pointY, hy);
+
+        --EntityLoad( "data/entities/particles/poof_pink.xml", hx, hy )
+    end
+
+    local angleMin = nil
+    local distance = nil
+
+    for i = 0, 180 do
+        local a, b, c, angleRad = PointToLine(x, y, i)
+        local dist = DistanceFromLineMany(a, b, c, pointX, pointY)
+        if distance == nil or distance > dist then
+            angleMin = angleRad;
+            distance = dist
+        end
+    end
+    --GamePrint(angleMin)
+    if math.random(0, 2) == 0 then angleMin = angleMin + math.pi end
+
+    return x, y, angleMin
 end
 
 function GetInven()
@@ -276,16 +285,32 @@ function GetInven()
 end
 
 function calculate_force_at(body_x, body_y)
-    local gravity_coeff = 196*100
-    local direction = math.pi/2
-    
-    local fx = math.cos( direction ) * gravity_coeff
-    local fy = -math.sin( direction ) * gravity_coeff
-  
-    return fx,fy
+    local gravity_coeff = 196 * 100
+    local direction = math.pi / 2
+
+    local fx = math.cos(direction) * gravity_coeff
+    local fy = -math.sin(direction) * gravity_coeff
+
+    return fx, fy
 end
 
 function setrandom()
     local frame = GameGetFrameNum()
     SetRandomSeed(frame + 69, frame - 69)
+end
+
+function IsPlayerPolymorphed()
+    local polymorphed_entities = EntityGetWithTag("polymorphed")
+    if (polymorphed_entities ~= nil) then
+        for _, entity_id in ipairs(polymorphed_entities) do
+            local is_player = false
+            local game_stats_comp = EntityGetFirstComponent(entity_id, "GameStatsComponent")
+            if (game_stats_comp ~= nil) then 
+                is_player = ComponentGetValue2(game_stats_comp, "is_player")
+            end
+            if (is_player) then
+                return true, entity_id
+            end
+        end
+    end
 end
