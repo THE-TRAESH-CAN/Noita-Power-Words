@@ -319,12 +319,25 @@ wsEvents = {
         return true
     end,
     Byebye = function(data)
+        local teleportatium = CellFactory_GetType("magic_liquid_teleportation")
         setrandom()
-
+        local tpEnemies = false
+        for index, value in ipairs(data.checkboxes) do
+            if (value == "Enemies") then
+                tpEnemies = true
+            end
+        end
         local player = get_player()
-        if (player == nil) then return true end
-        local game_effect = GetGameEffectLoadTo(player, "TELEPORTATION", true);
-        if game_effect ~= nil then ComponentSetValue(game_effect, "frames", 60); end
+        local x, y = get_player_pos()
+        if (tpEnemies) then
+            for _, entity in pairs(EntityGetInRadiusWithTag(x, y, 5000, "enemy") or {}) do
+                EntityAddRandomStains(entity, teleportatium, 100)
+            end
+        else
+            if (player == nil) then return true end
+            local game_effect = GetGameEffectLoadTo(player, "TELEPORTATION", true);
+            if game_effect ~= nil then ComponentSetValue(game_effect, "frames", 60); end
+        end
         return true
     end,
     BlazeIt = function(data)
@@ -504,26 +517,22 @@ wsEvents = {
         local balance = sliders.BALANCE --"No Duds", "Rare Duds", "50/50", "Dud Sometimes", "Mostly Duds"
         local rand = Random(min, max)
         for i = 1, rand do
-            spawn_entity_in_view_random_angle("data/entities/projectiles/bomb_holy.xml", 10, 200, 20, function(eid)
-                local dud = false
-                local r = Random(1, 100)
-                if (balance == 2) then
-                    dud = r >= 80
-                elseif (balance == 3) then
-                    dud = r >= 50
-                elseif (balance == 4) then
-                    dud = r >= 25
-                elseif (balance == 5) then
-                    dud = r >= 10
-                end
-
-                if (dud) then
-                    local proj_comp = EntityGetFirstComponentIncludingDisabled(eid, "ProjectileComponent")
-                    if (proj_comp ~= nil) then
-                        EntityRemoveComponent(eid, proj_comp)
-                    end
-                end
-            end)
+            local spawn = "data/entities/projectiles/bomb_holy.xml"
+            local dud = false
+            local r = Random(1, 100)
+            if (balance == 2) then
+                dud = r >= 80
+            elseif (balance == 3) then
+                dud = r >= 50
+            elseif (balance == 4) then
+                dud = r >= 25
+            elseif (balance == 5) then
+                dud = true
+            end
+            if (dud) then
+                spawn = "mods/powerwords/files/entities/holy_dud.xml"
+            end
+            spawn_entity_in_view_random_angle(spawn, 10, 200, 20)
         end
         return true
     end,
@@ -669,14 +678,69 @@ wsEvents = {
     end,
     Loose = function(data)
         setrandom()
-        --TODO UPDATE IT
+        local sliders = data._sliders
+        local balance = sliders.BALANCE -- TSUNAMI , AFTERSHOCK , EARTHQUAKE
         async(function()
             local x, y = get_player_pos()
+            local direction = Random(1, 2)
+            local tsunami = false
+            local force = false
+            local o_x = x
+            local o_y = y
+            if (balance == 1) then
+                tsunami = true
+                force = true
+            elseif (balance == 2) then
+                force = true
+            end
+            if (force) then
+                if (direction == 1) then
+                    o_x = x - 150
+                    o_y = y - 20
+                else
+                    o_x = x + 130
+                    o_y = y - 20
+                end
+            end
+
             local hit, hx, hy = RaytracePlatforms(x, y, x, y - 500)
             local yy = (y + hy) / 2;
             EntityLoad("data/entities/particles/image_emitters/magical_symbol.xml", hx, yy)
             wait(45)
-            EntityLoad("data/entities/projectiles/deck/crumbling_earth.xml", hx, yy)
+
+            EntityLoad("data/entities/projectiles/deck/crumbling_earth.xml", o_x, o_y)
+
+            wait(90)
+
+            if (force) then
+                local hole = EntityCreateNew("hole")
+                EntityAddComponent2(hole, "BlackHoleComponent", {
+                    radius = 250,
+                    particle_attractor_force = -10,
+                    damage_probability = 0,
+                    damage_amount = 0
+                })
+                EntityAddComponent2(hole, "LifetimeComponent",
+                    {
+                        lifetime = 150,
+                    })
+                EntitySetTransform(hole, o_x - 30, o_y)
+            end
+
+            wait(60)
+            if (tsunami) then
+                local emitter = EntityLoad("data/entities/projectiles/deck/sea_water.xml", o_x, o_y - 90)
+                local emitterComp = EntityGetFirstComponentIncludingDisabled(emitter, "ParticleEmitterComponent")
+                local seaComp = EntityGetFirstComponentIncludingDisabled(emitter, "MaterialSeaSpawnerComponent")
+                if ((emitterComp ~= nil and emitterComp > 0) and (seaComp ~= nil and seaComp > 0)) then
+                    ComponentSetValue2(seaComp, "material", CellFactory_GetType("water_salt"))
+                    ComponentSetValue2(emitterComp, "emitted_material_name", "brine")
+                end
+                local r = Random(4, 69)
+                for i = 1, r do
+                    spawn_entity_in_view_random_angle("data/entities/animals/fish.xml", 0, 200)
+                end
+            end
         end)
         return true
     end,
@@ -750,9 +814,23 @@ wsEvents = {
         local min = sliders.min
         local max = sliders.max
         local r = Random(min, max)
+        local chance = Random(1, 100)
+        local spawn = "data/entities/animals/rat.xml"
+        if (balance == 3) then
+            if (chance >= 50) then
+                spawn = "data/entities/misc/perks/plague_rats_rat.xml"
+            else
+                spawn = "data/entities/animals/rat.xml"
+            end
+        elseif (balance == 4) then
+            spawn = "data/entities/misc/perks/plague_rats_rat.xml"
+        end
         for i = 1, r do
-            spawn_entity_in_view_random_angle("data/entities/animals/rat.xml", 10, 250, 10, function(eid)
-                --TODO UPDATE IT
+            spawn_entity_in_view_random_angle(spawn, 10, 250, 10, function(eid)
+                if (balance == 1) then
+                    local effect = EntityLoad("data/entities/misc/effect_berserk.xml")
+                    EntityAddChild(eid, effect)
+                end
             end)
         end
         return true
@@ -765,9 +843,25 @@ wsEvents = {
         local min = sliders.min
         local max = sliders.max
         local r = Random(min, max)
+        local chance = Random(1, 100)
+        local spawn = "data/entities/animals/deer.xml"
         for i = 1, r do
-            spawn_entity_in_view_random_angle("data/entities/animals/deer.xml", 10, 250, 10, function(eid)
-                --TODO UPDATE IT
+            spawn_entity_in_view_random_angle(spawn, 10, 250, 10, function(eid)
+                if (balance == 1) then
+                    EntityAddComponent2(eid, "LifetimeComponent",
+                        {
+                            lifetime = Random(300, 1800),
+                        })
+                    EntityLoadToEntity("mods/powerwords/files/entities/ded_explosion.xml", eid)
+                elseif (balance == 2) then
+                    if (chance <= 50) then
+                        EntityAddComponent2(eid, "LifetimeComponent",
+                            {
+                                lifetime = Random(300, 1800),
+                            })
+                        EntityLoadToEntity("mods/powerwords/files/entities/ded_explosion.xml", eid)
+                    end
+                end
             end)
         end
         return true
@@ -780,9 +874,25 @@ wsEvents = {
         local min = sliders.min
         local max = sliders.max
         local r = Random(min, max)
+        local chance = Random(1, 100)
+        local spawn = "data/entities/animals/duck.xml"
         for i = 1, r do
-            spawn_entity_in_view_random_angle("data/entities/animals/duck.xml", 10, 250, 10, function(eid)
-                --TODO UPDATE IT
+            spawn_entity_in_view_random_angle(spawn, 10, 250, 10, function(eid)
+                if (balance == 1) then
+                    EntityAddComponent2(eid, "LifetimeComponent",
+                        {
+                            lifetime = Random(300, 1800),
+                        })
+                    EntityLoadToEntity("mods/powerwords/files/entities/ded_explosion.xml", eid)
+                elseif (balance == 2) then
+                    if (chance <= 50) then
+                        EntityAddComponent2(eid, "LifetimeComponent",
+                            {
+                                lifetime = Random(300, 1800),
+                            })
+                        EntityLoadToEntity("mods/powerwords/files/entities/ded_explosion.xml", eid)
+                    end
+                end
             end)
         end
         return true
@@ -965,10 +1075,12 @@ wsEvents = {
         spawn_entity_in_view_random_angle("data/entities/projectiles/circle_acid_die.xml", 80, 200, false,
             function(circle)
                 async(function()
-                    ComponentSetValue2(EntityGetFirstComponentIncludingDisabled(circle, "ParticleEmitterComponent"), "image_animation_file", "data/particles/image_emitters/circle_16.png")
+                    ComponentSetValue2(EntityGetFirstComponentIncludingDisabled(circle, "ParticleEmitterComponent"),
+                        "image_animation_file", "data/particles/image_emitters/circle_16.png")
                     ComponentSetValue2(EntityGetFirstComponent(circle, "LifetimeComponent"), "lifetime", 900)
-                    ComponentSetValue2(EntityGetFirstComponent(circle, "ParticleEmitterComponent"), "airflow_force",0.01);
-                    ComponentSetValue2(EntityGetFirstComponent(circle, "ParticleEmitterComponent"),"image_animation_speed", 0.75);
+                    ComponentSetValue2(EntityGetFirstComponent(circle, "ParticleEmitterComponent"), "airflow_force", 0.01);
+                    ComponentSetValue2(EntityGetFirstComponent(circle, "ParticleEmitterComponent"),
+                        "image_animation_speed", 0.75);
                     for i = 1, 90 do
                         ComponentSetValue(EntityGetFirstComponent(circle, "ParticleEmitterComponent"),
                             "emitted_material_name", random_from_array(mats));
@@ -997,17 +1109,73 @@ wsEvents = {
     end,
     Birthday = function(data)
         setrandom()
-        --TODO UPDATE THIS SHIT
-        local x, y = get_player_pos()
-        EntityLoad("data/entities/items/pickup/chest_random.xml", x, y)
+        local sliders = data._sliders
+        local balance = sliders.BALANCE --"UNHINGED", "Real Bad", "Bad", "Good", "Very Good", "REALLY GOOD"
+        spawn_entity_in_view_random_angle("data/entities/items/pickup/chest_random.xml", 20, 25, 20, function(eid)
+            if (balance ~= 4) then
+                local comps = EntityGetComponent(eid, "LuaComponent")
+                for key, value in pairs(comps) do
+                    EntityRemoveComponent(eid, value)
+                end
+                EntityAddComponent2(eid, "LuaComponent", {
+                    script_physics_body_modified = "mods/powerwords/files/scripts/chest_random.lua",
+                    execute_times = 1
+                })
+                EntityAddComponent2(eid, "LuaComponent", {
+                    script_item_picked_up = "mods/powerwords/files/scripts/chest_random.lua"
+                })
+            end
+
+            if (balance == 1) then
+                EntityAddComponent2(eid, "VariableStorageComponent", {
+                    name = "CHEST_STUFF",
+                    value_string = "data/entities/animals/wizard_poly.xml",
+                    value_int = 1
+                })
+            elseif (balance == 2) then
+                EntityAddComponent2(eid, "VariableStorageComponent", {
+                    name = "CHEST_STUFF",
+                    value_string = "data/entities/animals/necromancer_shop.xml",
+                    value_int = 1
+                })
+            elseif (balance == 3) then
+                EntityAddComponent2(eid, "VariableStorageComponent", {
+                    name = "CHEST_STUFF",
+                    value_string = "data/entities/animals/thundermage.xml",
+                    value_int = -10
+                })
+            elseif (balance == 4) then
+                --GamePrint("Ya got scammed sorry bud")
+                --regular ass chest something lame
+            elseif (balance == 5) then
+                GamePrint("Ya got scammed sorry bud")
+                --what is even considered good ?
+            elseif (balance == 6) then
+                GamePrint("Ya got scammed sorry bud")
+                --?????????????? why
+            end
+        end)
         return true
     end,
     Berserk = function(data)
         setrandom()
-
+        local stainEnemies = false
+        for index, value in ipairs(data.checkboxes) do
+            if (value == "Enemies") then
+                stainEnemies = true
+            end
+        end
         local player = get_player()
+        local x, y = get_player_pos()
         local berserk = CellFactory_GetType("magic_liquid_berserk")
-        EntityAddRandomStains(player, berserk, 1000)
+        if (player ~= nil) then
+            EntityAddRandomStains(player, berserk, 1000)
+        end
+        if (stainEnemies) then
+            for _, entity in pairs(EntityGetInRadiusWithTag(x, y, 5000, "enemy") or {}) do
+                EntityAddRandomStains(entity, berserk, 1000)
+            end
+        end
         return true
     end,
     Nolla = function(data)
@@ -1028,12 +1196,33 @@ wsEvents = {
     end,
     BackToTheBeginning = function(data)
         setrandom()
-
+        local checkpoint = false
+        for index, value in ipairs(data.checkboxes) do
+            if (value == "Checkpoints") then
+                checkpoint = true
+            end
+        end
         local player = get_player()
         local x = MagicNumbersGetValue("DESIGN_PLAYER_START_POS_X")
         local y = MagicNumbersGetValue("DESIGN_PLAYER_START_POS_Y")
         if (player ~= nil) then
-            EntitySetTransform(player, x, y)
+            if (checkpoint) then --YOINK THANKS CONGA LYNE
+                local _x, _y = EntityGetTransform(player)
+                local points = { 1500, 3070, 5110, 6640, 8700, 10740 }
+                local new_y = -100
+                --Cycle through various HM heights and reset the player to the closest one
+                for key, value in pairs(points) do
+                    if (value < _y) then
+                        new_y = value
+                    end
+                end
+
+                EntitySetTransform(player, 195, new_y)
+                GameSetCameraPos(195, new_y) -- no baby ambrosia for baby gamers over here
+            else
+                EntitySetTransform(player, x, y)
+                GameSetCameraPos(x, y) -- no baby ambrosia for baby gamers over here
+            end
         end
         return true
         --[[ dunno why this part stopped working
@@ -1044,5 +1233,16 @@ wsEvents = {
             LoadPixelScene( "data/biome_impl/clean_entrance.png", "", 128, 6655, "", true, true )
             LoadPixelScene( "data/biome_impl/clean_entrance.png", "", 128, 10750, "", true, true )
             ]]
+    end,
+    FuckMe = function(data)
+        local poly = CellFactory_GetType("magic_liquid_polymorph")
+        local player = get_player()
+        if (player ~= nil) then
+            EntityAddRandomStains(player, poly, 60)
+        end
+        for i = 1, Random(5, 15) do
+            spawn_entity_in_view_random_angle("data/entities/items/pickup/thunderstone.xml", 10, 200)
+        end
+        return true
     end
 }

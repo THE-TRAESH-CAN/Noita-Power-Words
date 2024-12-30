@@ -29,6 +29,7 @@ function OnWorldPostUpdate()
             local x = MagicNumbersGetValue("DESIGN_PLAYER_START_POS_X")
             local y = MagicNumbersGetValue("DESIGN_PLAYER_START_POS_Y")
             EntitySetTransform(player, x, y)
+            GameSetCameraPos(x, y) 
             --spawn_entity_in_view_random_angle("data/entities/animals/necromancer_super.xml", 69, 269)
             lastSpeechFrame = frame
         end
